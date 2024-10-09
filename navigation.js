@@ -1,28 +1,83 @@
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import AuthScreen from "./screens/AuthScreen";
+import HomeScreen from "./screens/HomeScreen";
+import SideBar from "./components/SideBar";
+import { useSelector } from "react-redux";
+import { selectTheme } from "./slices/themeSlice";
+import { themeColors } from "./theme";
+import SettingsScreen from "./screens/SettingsScreen";
+import { StatusBar } from "react-native";
+import DetailsScreen from "./screens/DetailsScreen";
+import AuthLoadingScreen from "./screens/AuthLoadingScreen";
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
-import React from "react";
-import HomeScreen from "./screens/HomeScreen";
-import AuthScreen from "./screens/AuthScreen";
+function DrawerNavigator() {
+  const theme = useSelector(selectTheme);
+  const isDark = theme === "dark";
+  return (
+    <Drawer.Navigator
+      screenOptions={{
+        headerShown: false,
+        drawerStyle: {
+          width: 240,
+        },
+        headerStyle: {
+          backgroundColor: themeColors.headerBackground(isDark),
+        },
+        headerTintColor: themeColors.headerText(isDark),
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
+        cardStyle: {
+          flex: 1,
+        },
+      }}
+      initialRouteName="Inicio"
+      drawerContent={() => <SideBar />}
+    >
+      <Drawer.Screen name="Inicio" component={HomeScreen} />
+      <Drawer.Screen name="Configuracion" component={SettingsScreen} />
+    </Drawer.Navigator>
+  );
+}
 
 export default function Navigation() {
   return (
     <NavigationContainer>
+      <StatusBar style="auto" />
       <Stack.Navigator
-        initialRouteName="Auth"
-        screenOptions={{ headerShown: false }}
+        initialRouteName="AuthLoading"
+        screenOptions={{
+          animationEnabled: true,
+          headerShown: false,
+        }}
+        options={{
+          animationTypeForReplace: "pop",
+          cardStyle: {
+            flex: 1,
+          },
+        }}
       >
+        <Stack.Screen name="AuthLoading" component={AuthLoadingScreen} />
         <Stack.Screen
           name="Auth"
           component={AuthScreen}
-          options={{ animationTypeForReplace: "pop" }}
+          options={{ animation: "fade" }}
         />
         <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ gestureEnabled: false, animation: "slide_from_right" }}
+          name="DashBoard"
+          component={DrawerNavigator}
+          options={{ gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="Details"
+          options={{ presentation: "modal", animation: "fade" }}
+          component={DetailsScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
