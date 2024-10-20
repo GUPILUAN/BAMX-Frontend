@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import FeaturedRow from "./FeaturedRow";
+import { productosDummy } from "../constants/Products";
 
 export default function Semaforo() {
   const critic = 1024;
@@ -9,14 +10,51 @@ export default function Semaforo() {
   const stable = 4096;
 
   const status = [
-    { title: "Estado crítico", category: "critic" },
-    { title: "Estado prioritario", category: "warning" },
-    { title: "Estado estable", category: "stable" },
+    { title: "Estado crítico", category: "crítico" },
+    { title: "Estado prioritario", category: "prioritario" },
+    { title: "Estado estable", category: "estable" },
   ];
 
   function lerp(a, b, t) {
     return a + t * (b - a);
   }
+
+  const productos = {
+    crítico: [],
+    prioritario: [],
+    estable: [],
+  };
+
+  function evaluarFechaDelProducto(producto) {
+    const hoy = new Date();
+    const fecha = new Date(producto.expiration_date);
+
+    const diferenciaTiempo = fecha - hoy;
+
+    const diferenciaDias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
+
+    if (diferenciaDias <= 2) {
+      productos.crítico.push(producto);
+    } else if (diferenciaDias <= 5) {
+      productos.prioritario.push(producto);
+    } else {
+      productos.estable.push(producto);
+    }
+  }
+
+  const getColor = (state) => {
+    if (state === "crítico") {
+      return "#FF4D4F";
+    } else if (state === "prioritario") {
+      return "#FFC107";
+    } else {
+      return "#52C41A";
+    }
+  };
+
+  productosDummy.results.forEach((p) => {
+    evaluarFechaDelProducto(p);
+  });
 
   const findLocation = (x, y, z) => {
     const total = x + y + z;
@@ -31,24 +69,30 @@ export default function Semaforo() {
 
   return (
     <View className="flex-1 justify-end items-center w-full">
-      <View className="items-center justify-center pb-5 w-full border-b border-gray-300">
+      <View className="items-center justify-center pb-5 w-full">
         <View style={styles.statusContainer}>
           <View style={styles.statusBox}>
-            <Text style={[styles.number, { color: "#FF4D4F" }]}>{critic}</Text>
+            <Text style={[styles.number, { color: getColor("crítico") }]}>
+              {critic}
+            </Text>
             <Text style={styles.description}>
               Productos se {"\n"} encuentran en{"\n"} estado CRITICO
             </Text>
           </View>
           <View style={styles.separatorV} />
           <View style={styles.statusBox}>
-            <Text style={[styles.number, { color: "#FFC107" }]}>{warning}</Text>
+            <Text style={[styles.number, { color: getColor("prioritario") }]}>
+              {warning}
+            </Text>
             <Text style={styles.description}>
               Productos se {"\n"} encuentra en {"\n"} estado prioritario
             </Text>
           </View>
           <View style={styles.separatorV} />
           <View style={styles.statusBox}>
-            <Text style={[styles.number, { color: "#52C41A" }]}>{stable}</Text>
+            <Text style={[styles.number, { color: getColor("estable") }]}>
+              {stable}
+            </Text>
             <Text style={styles.description}>
               Productos se {"\n"} encuentran en {"\n"} estado estable
             </Text>
@@ -68,7 +112,13 @@ export default function Semaforo() {
       <View className="flex-auto mb-12 pt-4">
         <ScrollView vertical bounces={false} nestedScrollEnabled={true}>
           {status.map((s, index) => {
-            return <FeaturedRow key={index} status={s} />;
+            return (
+              <FeaturedRow
+                key={index}
+                status={s}
+                productos={productos[s.category]}
+              />
+            );
           })}
         </ScrollView>
       </View>

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import AuthScreen from "./screens/AuthScreen";
 import HomeScreen from "./screens/HomeScreen";
+import InventoryScreen from "./screens/InventoryScreen";
 import SideBar from "./components/SideBar";
 import { useSelector } from "react-redux";
 import { selectTheme } from "./slices/themeSlice";
@@ -12,6 +13,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import { StatusBar } from "react-native";
 import DetailsScreen from "./screens/DetailsScreen";
 import AuthLoadingScreen from "./screens/AuthLoadingScreen";
+import { navigationRef } from "./functions/NavigationService";
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -41,6 +43,7 @@ function DrawerNavigator() {
       drawerContent={() => <SideBar />}
     >
       <Drawer.Screen name="Inicio" component={HomeScreen} />
+      <Drawer.Screen name="Inventario" component={InventoryScreen} />
       <Drawer.Screen name="Configuracion" component={SettingsScreen} />
     </Drawer.Navigator>
   );
@@ -48,7 +51,7 @@ function DrawerNavigator() {
 
 export default function Navigation() {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <StatusBar style="auto" />
       <Stack.Navigator
         initialRouteName="AuthLoading"

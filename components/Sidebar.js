@@ -10,8 +10,13 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useEffect } from "react";
-import Icon from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+  FontAwesome6,
+  Ionicons,
+  MaterialCommunityIcons,
+  AntDesign,
+  Feather,
+} from "react-native-vector-icons/";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTheme } from "../slices/themeSlice";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
@@ -23,10 +28,28 @@ export default function SideBar() {
   const navigation = useNavigation();
   const isIOS = Platform.OS === "ios";
   const isWeb = Platform.OS === "web";
-  const { width, height } = Dimensions.get("window"); // Obtén las dimensiones de la pantalla
+  const { width, height } = Dimensions.get("window");
   const theme = useSelector(selectTheme);
   const isDark = theme === "dark";
   const isDrawerOpen = useDrawerStatus() === "open";
+  const fechaActual = new Date();
+  const dia = fechaActual.getDate();
+  const meses = [
+    "ene",
+    "feb",
+    "mar",
+    "abr",
+    "may",
+    "jun",
+    "jul",
+    "ago",
+    "sep",
+    "oct",
+    "nov",
+    "dic",
+  ];
+  const mes = meses[fechaActual.getMonth()];
+  const año = fechaActual.getFullYear();
 
   const themeColorsTailwind = {
     backgroundTailwind: isDark ? "bg-gray-900" : "bg-gray-50",
@@ -70,8 +93,8 @@ export default function SideBar() {
           }}
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         >
-          <Ionicons
-            name={isDrawerOpen ? "arrow-back" : "arrow-forward"}
+          <AntDesign
+            name={isDrawerOpen ? "menu-unfold" : "menu-fold"}
             size={28}
             color={isDark ? "#1a1a1a" : "#ece7dc"}
           />
@@ -84,7 +107,13 @@ export default function SideBar() {
             }
             style={styles.sideBarBackground(isDark)}
           >
-            <View className=" items-center justify-center border-b border-gray-300 px-3">
+            <View className="py-2 flex-row items-center justify-evenly">
+              <Text className="text-center text-gray-600">
+                {`Fecha: ${dia}-${mes}-${año}`}{" "}
+              </Text>
+              <Feather name="sidebar" size={25} color="gray" />
+            </View>
+            <View className=" items-center justify-center border-b border-t border-gray-300 px-3">
               <Image
                 className="w-full h-24 m-3"
                 source={{
@@ -99,7 +128,7 @@ export default function SideBar() {
                 className="pl-4 py-2 flex-row items-center"
                 onPress={() => navigation.navigate("Inicio")}
               >
-                <Icon name="home" size={30} color="#e1a244" />
+                <Ionicons name="home" size={30} color="#e1a244" />
                 <Text
                   className={"ml-2 font-extrabold text-lg"}
                   style={styles.menuText}
@@ -107,8 +136,11 @@ export default function SideBar() {
                   Inicio
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity className="pl-4 py-2 flex-row items-center">
-                <Icon name="cube" size={30} color="#e1a244" />
+              <TouchableOpacity
+                className="pl-4 py-2 flex-row items-center"
+                onPress={() => navigation.navigate("Inventario")}
+              >
+                <FontAwesome6 name="cube" size={30} color="#e1a244" />
                 <Text
                   className={"ml-2 font-extrabold text-lg"}
                   style={styles.menuText}
@@ -116,17 +148,13 @@ export default function SideBar() {
                   Inventario
                 </Text>
               </TouchableOpacity>
+
               <TouchableOpacity className="pl-4 py-2 flex-row items-center">
-                <Icon name="book" size={30} color="#e1a244" />
-                <Text
-                  className={"ml-2 font-extrabold text-lg"}
-                  style={styles.menuText}
-                >
-                  Catálogo
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="pl-4 py-2 flex-row items-center">
-                <Icon name="edit" size={30} color="#e1a244" />
+                <MaterialCommunityIcons
+                  name="clipboard-edit-outline"
+                  size={30}
+                  color="#e1a244"
+                />
                 <Text
                   className={"ml-2 font-extrabold text-lg"}
                   style={styles.menuText}
@@ -141,7 +169,7 @@ export default function SideBar() {
                 style={styles.button(true, width, height)}
               >
                 <View className="flex-row items-center p-6">
-                  <Icon
+                  <FontAwesome6
                     name="cart-plus"
                     size={30}
                     color={isDark ? "#1a1a1a" : "#ece7dc"}
@@ -160,7 +188,7 @@ export default function SideBar() {
                 style={styles.button(false, width, height)}
               >
                 <View className="flex-row items-center p-6">
-                  <Icon
+                  <FontAwesome6
                     name="cart-arrow-down"
                     size={30}
                     color={isDark ? "#1a1a1a" : "#ece7dc"}
@@ -215,7 +243,7 @@ const styles = StyleSheet.create({
     fontSize: Dimensions.get("window").width * 0.013,
   },
   sideBarBackground: (isDark) => ({
-    backgroundColor: isDark ? "#100e09" : "#ece7dc",
+    backgroundColor: isDark ? "#100e09" : "#fff", //"#ece7dc",
   }),
   cartText: (isDark) => ({
     color: isDark ? "#1a1a1a" : "#ece7dc",

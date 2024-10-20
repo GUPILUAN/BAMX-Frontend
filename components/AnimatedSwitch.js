@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { selectTheme } from "../slices/themeSlice";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function AnimatedSwitch({ onValueChange }) {
   const [active, setActive] = useState("Semaforo");
@@ -36,6 +37,21 @@ export default function AnimatedSwitch({ onValueChange }) {
         <Animated.View
           style={[styles.animatedBg, { left: interpolatedLeft }]}
         />
+
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.15)", "transparent", "rgba(0, 0, 0, 0.15)"]}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 0, y: 0 }}
+          style={styles.innerShadowVertical}
+        />
+
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.1)", "transparent", "rgba(0, 0, 0, 0.1)"]}
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 0 }}
+          style={styles.innerShadowHorizontal}
+        />
+
         <TouchableOpacity
           style={[styles.button, active === "Semaforo" && styles.activeButton]}
           onPress={() => handlePress("Semaforo")}
@@ -77,14 +93,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: isDark ? "#362e1d" : "#fff",
     borderRadius: 25,
-    position: "",
     width: 400,
     height: 50,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 10,
+    position: "relative",
+    overflow: "hidden",
   }),
   animatedBg: {
     position: "absolute",
@@ -94,10 +106,26 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     zIndex: 0,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.3,
-    shadowRadius: 10,
+    shadowRadius: 5,
     elevation: 5,
+  },
+  innerShadowVertical: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "100%",
+    zIndex: -1,
+  },
+  innerShadowHorizontal: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    zIndex: -1,
   },
   button: {
     flex: 1,

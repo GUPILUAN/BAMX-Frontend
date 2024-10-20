@@ -1,6 +1,6 @@
 import axios from "axios";
 import { deleteData, getData, saveData } from "./userKey";
-import { useNavigation } from "@react-navigation/native";
+import { replace } from "../functions/NavigationService";
 
 const instance = axios.create({
   baseURL: "http://ec2-3-129-24-50.us-east-2.compute.amazonaws.com",
@@ -8,7 +8,11 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   async (config) => {
-    if (config.url === "/api/login/" || config.url === "/api/register/") {
+    if (
+      config.url === "/api/login/" ||
+      config.url === "/api/register/" ||
+      config.url === "/api/token/refresh/"
+    ) {
       return config;
     }
     let access = await getData("access");
@@ -16,7 +20,7 @@ instance.interceptors.request.use(
       try {
         access = await refreshToken();
       } catch (error) {
-        await logOut(useNavigation());
+        await logOut();
         throw error;
       }
     }
@@ -35,11 +39,17 @@ export const tokenExpired = (token) => {
   return payload.exp < currentTime;
 };
 
-export const logOut = async (navigation) => {
-  await deleteData("access");
-  await deleteData("refresh");
-  console.log("Sesión expirada, redirigiendo al login...");
-  navigation.replace("Auth");
+export const logOut = async () => {
+  try {
+    await deleteData("access");
+    await deleteData("refresh");
+
+    console.log("Sesión expirada, redirigiendo al login...");
+
+    replace("Auth");
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+  }
 };
 
 const refreshToken = async () => {
@@ -49,7 +59,7 @@ const refreshToken = async () => {
       throw new Error("No refresh token found");
     }
     const response = await instance.post("/api/token/refresh/", {
-      refresh_token: refresh,
+      refresh: refresh,
     });
     const { access } = response.data;
     await saveData("access", access);
@@ -77,22 +87,4 @@ export const retrieveData = async (route) => {
   } catch (error) {
     console.log("Error al obtener datos:", error);
   }
-};
-export const fetchImages = async (route) => {
-  try {
-    const urlPath = route.split(".com")[1];
-    const response = await instance.get(urlPath, {
-      responseType: "blob",
-    });
-    if (response.data) {
-      const blob = new Blob([response.data], { type: "image/jpeg" });
-      const imageUrl = URL.createObjectURL(blob);
-      return imageUrl;
-    } else {
-      console.error("La respuesta no contiene datos de imagen.");
-    }
-  } catch (error) {
-    console.error("Error al obtener imágenes:", error);
-  }
-  return null;
 };

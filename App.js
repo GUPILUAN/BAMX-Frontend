@@ -2,7 +2,7 @@ import Navigation from "./navigation";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "./store";
 import { useEffect } from "react";
-import { StatusBar, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 import { setTheme } from "./slices/themeSlice";
 import { NativeWindStyleSheet } from "nativewind";
 import { selectSettings } from "./slices/settingsSlice";

@@ -13,23 +13,25 @@ import { selectTheme } from "../slices/themeSlice";
 import ProductCard from "./ProductCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { retrieveData } from "../functions/apiCalls";
+import { useNavigation } from "@react-navigation/native";
 
-export default function FeaturedRow({ status }) {
+export default function FeaturedRow({ status, productos }) {
   const theme = useSelector(selectTheme);
   const isDark = theme === "dark";
   const [products, setProducts] = useState({});
+  const navigation = useNavigation();
 
   const isWeb = Platform.OS === "web";
   const iconColor = (category) =>
-    category === "critic"
+    category === "crítico"
       ? "#FF4D4F"
-      : category === "warning"
+      : category === "prioritario"
       ? "#FFC107"
       : "#52C41A";
   const iconName = (category) =>
-    category === "critic"
+    category === "crítico"
       ? "warning"
-      : category === "warning"
+      : category === "prioritario"
       ? "alert-circle"
       : "checkmark-circle";
 
@@ -43,7 +45,9 @@ export default function FeaturedRow({ status }) {
 
   return (
     <View
-      className={`flex-row max-w-6xl mb-5 ${isWeb ? "overflow-scroll" : ""}`}
+      className={`flex-row max-w-6xl py-4 border-t border-gray-300 ${
+        isWeb ? "overflow-scroll" : ""
+      }`}
     >
       <View className="flex-col">
         <View className="flex-row justify-start items-center">
@@ -55,7 +59,7 @@ export default function FeaturedRow({ status }) {
           />
         </View>
         <FlatList
-          data={products}
+          data={productos.slice(0, 10)}
           nestedScrollEnabled={true}
           renderItem={({ item }) => <ProductCard item={item} />}
           keyExtractor={(item, index) => index.toString()}
@@ -63,31 +67,40 @@ export default function FeaturedRow({ status }) {
           contentContainerStyle={{ paddingHorizontal: 15 }}
           style={{ paddingVertical: 18 }}
           horizontal
+          bounces={false}
           ListFooterComponent={
-            <TouchableOpacity className="items-center justify-center p-3">
-              <View className="justify-center items-center items-col">
-                <View
-                  className={
-                    "border-2 rounded-lg my-5 " +
-                    (isDark ? "border-white" : "border-black")
-                  }
-                >
-                  <Ionicons
-                    name="arrow-forward"
-                    size={70}
-                    color={isDark ? "white" : "black"}
-                  ></Ionicons>
+            productos.length > 10 && (
+              <TouchableOpacity
+                className="items-center justify-center p-3"
+                onPress={() => {
+                  console.log(productos.length);
+                  navigation.navigate("Inventario");
+                }}
+              >
+                <View className="justify-center items-center items-col">
+                  <View
+                    className={
+                      "border-2 rounded-lg my-5 " +
+                      (isDark ? "border-white" : "border-black")
+                    }
+                  >
+                    <Ionicons
+                      name="arrow-forward"
+                      size={70}
+                      color={isDark ? "white" : "black"}
+                    ></Ionicons>
+                  </View>
+                  <Text
+                    className={
+                      "text-2xl font-bold " +
+                      (isDark ? "text-white" : "text-black")
+                    }
+                  >
+                    Ver más
+                  </Text>
                 </View>
-                <Text
-                  className={
-                    "text-2xl font-bold " +
-                    (isDark ? "text-white" : "text-black")
-                  }
-                >
-                  Ver más
-                </Text>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )
           }
         />
       </View>
@@ -98,9 +111,9 @@ export default function FeaturedRow({ status }) {
 const styles = StyleSheet.create({
   titleText: (category) => ({
     color:
-      category === "critic"
+      category === "crítico"
         ? "#FF4D4F"
-        : category === "warning"
+        : category === "prioritario"
         ? "#FFC107"
         : "#52C41A",
     fontFamily: "SF-Compact-Semibold",

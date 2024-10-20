@@ -18,11 +18,9 @@ export default function SettingsScreen() {
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const settings = useSelector(selectSettings);
   const [isAutoTheme, setIsAutoTheme] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const theme = useSelector(selectTheme);
   const isDark = theme === "dark";
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   useEffect(() => {
     const loadStoredSettings = async () => {
@@ -45,15 +43,6 @@ export default function SettingsScreen() {
       setIsAutoTheme(settings.isAutoTheme);
     }
   }, [settings]);
-  useEffect(() => {
-    console.log(isLoggedIn);
-    const exit = async () => {
-      if (!isLoggedIn) {
-        await logOut(navigation);
-      }
-    };
-    exit();
-  }, [isLoggedIn]);
   useEffect(() => {
     const saveSettings = async (newSettings) => {
       try {
@@ -144,7 +133,7 @@ export default function SettingsScreen() {
 
         <TouchableOpacity
           className="bg-blue-500 rounded-full p-4 items-center "
-          onPress={() => setIsLoggedIn(false)}
+          onPress={async () => await logOut()}
         >
           <Text className="text-white text-lg font-bold">Cerrar sesión</Text>
         </TouchableOpacity>
