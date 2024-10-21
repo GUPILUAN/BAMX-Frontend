@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProductRow from "./ProductRow";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function ProductList({ productos, test, getIndexes }) {
   const [selectedIndexes, setSelectedIndexes] = useState([]);
@@ -23,7 +23,7 @@ export default function ProductList({ productos, test, getIndexes }) {
 
   return (
     <View className="w-5/6 mt-2">
-      {productos.slice(0, 9).map((producto, index) => (
+      {productos.map((producto, index) => (
         <ProductRow
           handleSelect={handleSelect}
           isSelected={selectedIndexes?.includes(producto.product_id)}

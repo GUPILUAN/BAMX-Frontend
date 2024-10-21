@@ -57,7 +57,7 @@ export const productosDummy = {
       name: "Frijoles enlatados",
       quantity: 100,
       entry_date: "2024-10-14T00:00:00Z",
-      expiration_date: "2024-10-14T00:00:00Z",
+      expiration_date: "2024-10-25T00:00:00Z",
       type: "canned_food",
       product_id: "PROD006",
       image:
@@ -67,7 +67,7 @@ export const productosDummy = {
       name: "Sopa de tomate enlatada",
       quantity: 80,
       entry_date: "2024-10-15T00:00:00Z",
-      expiration_date: "2024-10-15T00:00:00Z",
+      expiration_date: "2024-10-25T00:00:00Z",
       type: "canned_food",
       product_id: "PROD007",
       image:
@@ -107,7 +107,7 @@ export const productosDummy = {
       name: "Harina de maíz",
       quantity: 90,
       entry_date: "2024-10-16T00:00:00Z",
-      expiration_date: "2025-04-16T00:00:00Z",
+      expiration_date: "2024-10-25T00:00:00Z",
       type: "grain",
       product_id: "PROD011",
       image:
@@ -127,7 +127,7 @@ export const productosDummy = {
       name: "Sardinas enlatadas",
       quantity: 100,
       entry_date: "2024-10-18T00:00:00Z",
-      expiration_date: "2026-10-18T00:00:00Z",
+      expiration_date: "2024-10-25T00:00:00Z",
       type: "canned_food",
       product_id: "PROD013",
       image:
@@ -147,7 +147,7 @@ export const productosDummy = {
       name: "Spaghetti",
       quantity: 150,
       entry_date: "2024-10-20T00:00:00Z",
-      expiration_date: "2025-10-20T00:00:00Z",
+      expiration_date: "2024-10-25T00:00:00Z",
       type: "grain",
       product_id: "PROD015",
       image:

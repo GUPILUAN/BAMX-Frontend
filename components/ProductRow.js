@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { FontAwesome6, FontAwesome5 } from "react-native-vector-icons/";
 import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ProductRow({
   index,
@@ -9,6 +10,7 @@ export default function ProductRow({
   handleSelect,
   product,
 }) {
+  const navigation = useNavigation();
   const unidad = {
     fruit: "unidades",
     canned_food: "latas",
@@ -73,7 +75,10 @@ export default function ProductRow({
           }
           style={isSelected ? styles.selectedItem : null}
         >
-          <TouchableOpacity className="border-gray-500 border-2 rounded-lg w-9 h-9 items-center justify-center">
+          <TouchableOpacity
+            className="border-gray-500 border-2 rounded-lg w-9 h-9 items-center justify-center"
+            onPress={() => navigation.navigate("Details", { product })}
+          >
             <FontAwesome6 name="info" size={20} color="gray" />
           </TouchableOpacity>
           <Text className="ml-4 w-1/5">{product.name}</Text>

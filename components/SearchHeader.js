@@ -4,8 +4,9 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  StyleSheet,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FontAwesome6,
   MaterialCommunityIcons,
@@ -15,7 +16,13 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { selectTheme } from "../slices/themeSlice";
 
-export default function SearchHeader({ onDataChange }) {
+export default function SearchHeader({
+  onDataChange,
+  indexesLength,
+  handleSearch,
+  query,
+  handleOrder,
+}) {
   const [selecting, setSelecting] = useState(false);
   const [filterSelected, setFilterSelected] = useState("ingreso");
   const [search, setSearch] = useState("");
@@ -25,6 +32,13 @@ export default function SearchHeader({ onDataChange }) {
   const isDarkMode = theme === "dark";
   const textColor = isDarkMode ? "text-gray-800" : "text-white";
   const order = orderType ? "ascendente" : "descendente";
+
+  useEffect(() => {
+    handleOrder(
+      orderType,
+      filterSelected === "ingreso" ? "entry_date" : "expiration_date"
+    );
+  }, [orderType, filterSelected]);
 
   const handleFilterSelection = (filter) => {
     setFilterSelected(filter);
@@ -39,7 +53,10 @@ export default function SearchHeader({ onDataChange }) {
   };
 
   return (
-    <View className="flex-row mt-2 justify-between">
+    <View
+      className="flex-row mt-2 justify-between mb-4 "
+      style={styles.container}
+    >
       <View className="flex-col w-1/2 mr-16">
         {/*SearchBar*/}
         <View className="flex-row items-center mb-2">
@@ -54,7 +71,9 @@ export default function SearchHeader({ onDataChange }) {
             <TextInput
               placeholder="Buscar productos..."
               placeholderTextColor="gray"
-              className={"ml-2 flex-1 "}
+              className={"ml-2 flex-1"}
+              onChangeText={(text) => handleSearch(text)}
+              value={query}
             />
           </View>
         </View>
@@ -94,6 +113,8 @@ export default function SearchHeader({ onDataChange }) {
           <TouchableOpacity
             className="flex-col bg-gray-400 justify-center rounded-3xl mx-2"
             onPress={handleClick}
+            style={indexesLength > 0 ? styles.button(true) : null}
+            disabled={indexesLength <= 0}
           >
             <View className="items-center p-5">
               <FontAwesome6
@@ -109,6 +130,8 @@ export default function SearchHeader({ onDataChange }) {
           <TouchableOpacity
             className="flex-col bg-gray-400 justify-center rounded-3xl mx-2"
             onPress={handleClick}
+            style={indexesLength > 0 ? styles.button(false) : null}
+            disabled={indexesLength <= 0}
           >
             <View className="items-center p-5">
               <FontAwesome6
@@ -144,3 +167,27 @@ export default function SearchHeader({ onDataChange }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#f7f7f7",
+    padding: 10,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  button: (good) => ({
+    backgroundColor: good ? "#78af6d" : "#d65f61",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+  }),
+});

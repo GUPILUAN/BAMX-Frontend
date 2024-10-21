@@ -111,7 +111,6 @@ export default function SideBar() {
               <Text className="text-center text-gray-600">
                 {`Fecha: ${dia}-${mes}-${año}`}{" "}
               </Text>
-              <Feather name="sidebar" size={25} color="gray" />
             </View>
             <View className=" items-center justify-center border-b border-t border-gray-300 px-3">
               <Image

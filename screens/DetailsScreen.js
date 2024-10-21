@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default function DetailsScreen() {
   const { params } = useRoute();
-  let product = params.item;
+  let product = params.item || params.product;
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
